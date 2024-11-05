@@ -1,0 +1,24 @@
+aiohttp
+Es una biblioteca para Python que permite crear aplicaciones web y realizar solicitudes HTTP de forma asíncrona
+	Servidor Asíncrono: Permite crear un servidor web que puede manejar múltiples conexiones simultáneamente sin bloquear el hilo principal. 
+	Esto es ideal para aplicaciones que requieren una alta concurrencia, como APIs o servicios web.
+
+	Cliente Asíncrono: Puedes hacer solicitudes HTTP (GET, POST, etc.) de manera asíncrona, lo que mejora la eficiencia en la comunicación con otros servicios o APIs.
+
+	Soporte para WebSockets: aiohttp también proporciona soporte para WebSockets, lo que permite crear aplicaciones en tiempo real que pueden comunicarse bidireccionalmente con los clientes.
+	
+async 
+es útil si:
+
+Operaciones I/O: Si más adelante decides que la función necesita realizar operaciones de red, como acceder a una base de datos de forma asíncrona, async permitirá que otras tareas se ejecuten mientras esperas la respuesta de esa operación.
+
+Escalabilidad: Al utilizar async, tu aplicación puede manejar múltiples solicitudes simultáneamente sin bloquearse. Esto es especialmente importante en aplicaciones web que deben responder a varios usuarios al mismo tiempo.
+
+Compatibilidad: Si tu entorno o framework (como aiohttp) está diseñado para funcionar con código asíncrono, definir funciones como async te permitirá integrarte mejor con esos componentes.
+
+Handle Upload
+¿Cómo Funciona Todo Junto?
+Subida de Archivos: Cuando se recibe una solicitud para subir un archivo, se activa handle_upload.
+Guardado del Archivo: La función puede incluir la lógica para guardar el archivo en el servidor de manera asíncrona (lo cual no se muestra aquí, pero está implícito).
+Ejecución en Paralelo: Al llamar a loop.run_in_executor, patente_worker se ejecuta en un proceso separado, permitiendo que la función handle_upload continúe sin bloquearse. Esto es especialmente útil si patente_worker realiza operaciones pesadas, como el procesamiento de imágenes, ya que no interrumpe la capacidad de respuesta del servidor.
+Manejo de Respuestas: Mientras patente_worker se ejecuta, handle_upload puede regresar inmediatamente una respuesta al cliente (por ejemplo, "Cargando imagen..."), sin esperar a que patente_worker complete su tarea.

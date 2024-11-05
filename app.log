@@ -1,0 +1,58 @@
+2024-10-29 13:12:47,603 - ERROR - Error handling request
+Traceback (most recent call last):
+  File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_protocol.py", line 433, in _handle_request
+    resp = await request_handler(request)
+  File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_app.py", line 504, in _handle
+    resp = await handler(request)
+  File "/home/kbza/Proyectos/Compu2docker/servidor.py", line 45, in show
+    datos = conexion.obtener_datos()
+  File "/home/kbza/Proyectos/Compu2docker/conexion.py", line 58, in obtener_datos
+    conexion.close()
+UnboundLocalError: local variable 'conexion' referenced before assignment
+2024-10-29 13:12:50,350 - ERROR - Error handling request
+Traceback (most recent call last):
+  File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_protocol.py", line 433, in _handle_request
+    resp = await request_handler(request)
+  File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_app.py", line 504, in _handle
+    resp = await handler(request)
+  File "/home/kbza/Proyectos/Compu2docker/servidor.py", line 45, in show
+    datos = conexion.obtener_datos()
+  File "/home/kbza/Proyectos/Compu2docker/conexion.py", line 58, in obtener_datos
+    conexion.close()
+UnboundLocalError: local variable 'conexion' referenced before assignment
+2024-10-30 20:26:43,344 - INFO - ::1 [30/Oct/2024:20:26:43 -0300] "GET / HTTP/1.1" 200 3235 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-30 20:26:43,403 - ERROR - Error procesando la solicitud: Not Found
+2024-10-30 20:26:43,404 - INFO - ::1 [30/Oct/2024:20:26:43 -0300] "GET /css/styles.css HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-30 20:26:48,201 - INFO - ::1 [30/Oct/2024:20:26:48 -0300] "GET /upload.html HTTP/1.1" 200 4181 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-30 20:26:48,259 - ERROR - Error procesando la solicitud: Not Found
+2024-10-30 20:26:48,260 - INFO - ::1 [30/Oct/2024:20:26:48 -0300] "GET /css/styles.css HTTP/1.1" 500 200 "https://localhost:8000/upload.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-30 20:26:55,939 - INFO - ::1 [30/Oct/2024:20:26:55 -0300] "POST /upload HTTP/1.1" 200 194 "https://localhost:8000/upload.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-30 20:26:55,942 - ERROR - Future exception was never retrieved
+future: <Future finished exception=TypeError("cannot pickle 'coroutine' object")>
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/concurrent/futures/process.py", line 211, in _sendback_result
+    result_queue.put(_ResultItem(work_id, result=result,
+  File "/usr/lib/python3.10/multiprocessing/queues.py", line 371, in put
+    obj = _ForkingPickler.dumps(obj)
+  File "/usr/lib/python3.10/multiprocessing/reduction.py", line 51, in dumps
+    cls(buf, protocol).dump(obj)
+TypeError: cannot pickle 'coroutine' object
+"""
+
+The above exception was the direct cause of the following exception:
+
+TypeError: cannot pickle 'coroutine' object
+2024-10-30 20:26:59,472 - INFO - ::1 [30/Oct/2024:20:26:59 -0300] "GET /upload.html HTTP/1.1" 200 4181 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-30 20:26:59,511 - ERROR - Error procesando la solicitud: Not Found
+2024-10-30 20:26:59,512 - INFO - ::1 [30/Oct/2024:20:26:59 -0300] "GET /css/styles.css HTTP/1.1" 500 200 "https://localhost:8000/upload.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-30 20:27:01,095 - ERROR - Error procesando la solicitud: local variable 'conexion' referenced before assignment
+2024-10-30 20:27:01,096 - INFO - ::1 [30/Oct/2024:20:27:01 -0300] "GET /show.html HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-30 20:34:35,086 - INFO - ::1 [30/Oct/2024:20:34:31 -0300] "GET /show.html HTTP/1.1" 200 95041207 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-10-31 12:30:35,535 - INFO - ::1 [31/Oct/2024:12:30:31 -0300] "GET /show.html HTTP/1.1" 200 95041208 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-11-05 08:15:16,773 - INFO - ::1 [05/Nov/2024:08:15:16 -0300] "GET / HTTP/1.1" 200 3235 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-11-05 08:15:16,843 - ERROR - Error procesando la solicitud: Not Found
+2024-11-05 08:15:16,844 - INFO - ::1 [05/Nov/2024:08:15:16 -0300] "GET /css/styles.css HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-11-05 08:15:17,255 - ERROR - Error procesando la solicitud: Not Found
+2024-11-05 08:15:17,255 - INFO - ::1 [05/Nov/2024:08:15:17 -0300] "GET /favicon.ico HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
