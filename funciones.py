@@ -57,5 +57,5 @@ def list_images(folder_path, allowed_formats=None):
     return image_list
 
 # Uso específico para la carpeta Grayscale
-validate_images_folder = './Validada'
+validate_images_folder = './images'
 validate_image_list = list_images(validate_images_folder)

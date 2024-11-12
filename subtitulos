@@ -22,3 +22,5 @@ Subida de Archivos: Cuando se recibe una solicitud para subir un archivo, se act
 Guardado del Archivo: La función puede incluir la lógica para guardar el archivo en el servidor de manera asíncrona (lo cual no se muestra aquí, pero está implícito).
 Ejecución en Paralelo: Al llamar a loop.run_in_executor, patente_worker se ejecuta en un proceso separado, permitiendo que la función handle_upload continúe sin bloquearse. Esto es especialmente útil si patente_worker realiza operaciones pesadas, como el procesamiento de imágenes, ya que no interrumpe la capacidad de respuesta del servidor.
 Manejo de Respuestas: Mientras patente_worker se ejecuta, handle_upload puede regresar inmediatamente una respuesta al cliente (por ejemplo, "Cargando imagen..."), sin esperar a que patente_worker complete su tarea.
+
+Base de datos asincronica

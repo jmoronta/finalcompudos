@@ -20,10 +20,14 @@ from marshmallow import Schema, fields, ValidationError
 from aiohttp_session import get_session
 from concurrent.futures import ProcessPoolExecutor
 
-async def protected_route(request):
-    session = await get_session(request)
-    if 'user' not in session:
-        return web.Response(text='No autorizado', status=403)
+image_queue = asyncio.Queue()
+
+result_queue = asyncio.Queue()
+
+#async def protected_route(request):
+#    session = await get_session(request)
+#    if 'user' not in session:
+#        return web.Response(text='No autorizado', status=403)
 
 logging.basicConfig(level=logging.INFO, filename='app.log', format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -48,7 +52,8 @@ async def upload(request):
     return web.Response(text=content, content_type='text/html')
 
 async def show(request):
-    datos = conexion.obtener_datos()
+    
+    datos = await conexion.obtener_datos()
     
     # Obtener la fecha y hora actual
     ahora = datetime.now()
@@ -211,7 +216,7 @@ async def cobrar(request):
         monto_a_pagar = horas_redondeadas * 500
         
         # Insertar los datos en la tabla cobros
-        conexion.insertar_cobro(patente, tiempo_str, monto_a_pagar)
+        await conexion.insertar_cobro(patente, tiempo_str, monto_a_pagar)
         #conexion.insertar_cobro('ABC123', '2023-06-13T12:34:56', 1000.0)
     except ValidationError as err:
         return web.Response(text=str(err.messages), status=400)    
@@ -225,12 +230,9 @@ async def handle_upload(request):
     reader = await request.multipart()
     field = await reader.next()
 
-    # Nombre del archivo
     filename = field.filename
-
-    # Ruta donde se guardará la imagen
     save_path = os.path.join('./images', filename)
-    
+
     try:
         # Guardar la imagen en el servidor de manera asíncrona
         async with aiofiles.open(save_path, 'wb') as f:
@@ -241,18 +243,60 @@ async def handle_upload(request):
                 await f.write(chunk)
 
         # Agregar la imagen a la cola para procesamiento
-        image_queue.put(save_path)
+        await image_queue.put(save_path)
+
+        # Responder con una página HTML que incluya el mensaje y el botón
+        response_text = f"""
+        <html>
+        <head>
+            <title>Carga Exitosa</title>
+            <style>
+                body {{
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    margin-top: 50px;
+                }}
+                .button {{
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    color: white;
+                    background-color: #007bff;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    text-decoration: none;
+                }}
+                .button:hover {{
+                    background-color: #0056b3;
+                }}
+            </style>
+        </head>
+        <body>
+            <h1>Imagen "{filename}" cargada con éxito.</h1>
+            <p>¡Gracias por subir la imagen!</p>
+            <a href="/" class="button">Volver al inicio</a>
+        </body>
+        </html>
+        """
         
-        # Enviar la tarea a Celery
-        #task = process_image.delay(save_path)
-        
-        result_path = image_queue.get()
-        await loop.run_in_executor(executor, patente_worker, save_path)
-        return web.Response(text=f'Imagen "{filename}" cargada con éxito.', content_type='text/plain')
-    
+        return web.Response(text=response_text, content_type='text/html')
+
+        # Aquí esperamos el resultado del procesamiento en segundo plano
+        # Este no es un bloqueo, ya que está gestionado por el worker.
+        asyncio.create_task(wait_for_result(response))
+
+        return response
+
     except Exception as e:
         return web.Response(text=f'Error al guardar la imagen: {str(e)}', status=500)
-    
+
+async def wait_for_result(response):
+    # Espera un mensaje de la cola de resultados
+    result_message = await result_queue.get()
+    print(f"Resultado recibido: {result_message}")
+
+    # Aquí puedes hacer algo con el mensaje recibido, como actualizar la UI
+
     
 async def handle_pagar(request):
     reader = await request.multipart()
@@ -276,7 +320,7 @@ async def handle_pagar(request):
     image_queue.put(save_path)
 
     # Bloquear hasta que la conversión de la imagen esté completa
-    result_path = image_queue.get()
+    await result_queue.get()
 
     return web.Response(text=f'Imagen "{filename}" cargada con éxito.', content_type='text/plain')
 
@@ -299,10 +343,13 @@ async def get_dashboard_data(request):
 async def patente_worker(queue):
     while True:
         try:
-            image_path = queue.get()
+            image_path = await queue.get()
             if image_path is None:
+                print("Terminando el worker...")
                 break
-
+            
+            print(f"Procesando imagen en: {image_path}")
+            
             # Procesar la imagen
             m = ONNXPlateRecognizer('argentinian-plates-cnn-model')
             nropatente = m.run(image_path)
@@ -311,23 +358,34 @@ async def patente_worker(queue):
             with open(image_path, 'rb') as image_file:
                 image_data = image_file.read()
 
-            link = gp.convert_to_gplink(image_path)
-            print("La ubicación es:", link)
+            # Aquí intentamos obtener el link. Si falla, asignamos un valor predeterminado o manejamos el error.
+            try:
+                link = gp.convert_to_gplink(image_path)
+                print("La ubicación es:", link)
+            except Exception as e:
+            # Si hay un error al convertir, asignamos un valor predeterminado o logueamos el error
+                link = "No se pudo generar el link."
+                print(f"Error al generar el link: {e}")
 
             # Insertar en la base de datos
-            conexion.insert_en_tabla(image_path, nropatente, link)
+            await conexion.insert_en_tabla(image_path, nropatente, link)
+            
+            await result_queue.put("Procesamiento completado")
             
             # Generar la ruta de la imagen validada
-            asignada_image_path = os.path.join('./Validada', 'validada_' + os.path.basename(image_path))
+            asignada_image_path = os.path.join('./images', 'validada_' + os.path.basename(image_path))
             # Agregar la imagen convertida a la cola de resultados
-            image_queue.put(asignada_image_path)
+            #await image_queue.put(image_path)
 
         except Exception as e:
             # Loguear el error
             print(f"Error en el procesamiento de la imagen {image_path}: {e}")
             # Enviar mensaje de error o realizar otras acciones según sea necesario
 
-        
+# Lanza la función asincrónica utilizando asyncio
+async def start_patente_worker(queue):
+    # Usamos asyncio.create_task para ejecutar patente_worker en paralelo
+    return asyncio.create_task(patente_worker(queue))        
 
 
 def list_images(folder_path, allowed_formats=None):
@@ -361,20 +419,20 @@ async def error_middleware(request, handler):
         logging.error(f"Error procesando la solicitud: {str(e)}")
         return web.Response(text='Error interno del servidor.', status=500)
 
-if __name__ == '__main__':
-    
+# Función principal asincrónica para iniciar el servidor y el worker
+async def main():    
     parser = argparse.ArgumentParser(description='Arrays')
     parser.add_argument('-p', '--port', required=True,action="store", dest="puerto",type=int, help="Puerto")
     
     args = parser.parse_args()
     puerto=args.puerto
     
-    image_queue = multiprocessing.Queue()
-
+    asyncio.create_task(start_patente_worker(image_queue))
     # Crear el proceso hijo para el servicio 
-    patente_process = multiprocessing.Process(target=patente_worker, args=(image_queue,))
-    patente_process.start()
+    #patente_process = multiprocessing.Process(target=patente_worker, args=(image_queue,))
+    #patente_process.start()
 
+    # Configuración del servidor web con aiohttp
     app = web.Application()
     app.router.add_get('/', home)
     app.router.add_get('/upload.html', upload)
@@ -395,36 +453,51 @@ if __name__ == '__main__':
 
     # Configurar el bucle de eventos
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(runner.setup())
+    await runner.setup()
 
     #site = web.TCPSite(runner, '0.0.0.0', puerto,ssl_context=ssl_context) ver este tema
     # Permitir conexiones en IPv4
     site_ipv4 = web.TCPSite(runner, '0.0.0.0', puerto,ssl_context=ssl_context)
-    loop.run_until_complete(site_ipv4.start())
+    await site_ipv4.start()
     
-    # Permitir conexiones en IPv6
-    site_ipv6 = web.TCPSite(runner, '::', puerto, ssl_context=ssl_context)
-    loop.run_until_complete(site_ipv6.start())
+    # Permitir conexiones en IPv6 si lo queremos que funcione se habilita
+    #site_ipv6 = web.TCPSite(runner, '::', puerto, ssl_context=ssl_context)
+    #await site_ipv6.start()
 
     print("Servidor web en ejecución en https://0.0.0.0:",puerto)
 
-    try:
-        loop.run_forever()
+    """try:
+        await asyncio.Event().wait()
     except KeyboardInterrupt:
         pass
     finally:
-        # Detener el servicio de escala de grises
-        image_queue.put(None)
-        patente_process.join()
+        await image_queue.put(None)
+        await runner.cleanup()
+        await site_ipv4.stop()
+        #await site_ipv6.stop()"""
+    try:
+        await asyncio.Event().wait()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # Termina todos los workers correctamente
+        await image_queue.put(None)  # Enviar señal de terminación al worker
+        await runner.cleanup()
+        await site_ipv4.stop()
+
 
         # Limpiar el bucle de eventos
-        loop.run_until_complete(runner.cleanup())
+        #loop.run_until_complete(runner.cleanup())
 
         # Cerrar el bucle de eventos
-        loop.stop()
-        loop.run_until_complete(loop.shutdown_asyncgens())
-        loop.close()
+        #loop.stop()
+        #loop.run_until_complete(loop.shutdown_asyncgens())
+        #loop.close()
         
         # Detener sitios IPv4 e IPv6
-        loop.run_until_complete(site_ipv4.stop())
-        loop.run_until_complete(site_ipv6.stop())
+        #loop.run_until_complete(site_ipv4.stop())
+        #loop.run_until_complete(site_ipv6.stop())
+        
+if __name__ == '__main__':
+    # Ejecutar el servidor principal
+    asyncio.run(main())
