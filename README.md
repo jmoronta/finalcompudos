@@ -1,7 +1,3 @@
-Aquí tienes una versión modificada y detallada de la documentación para tu repositorio de GitHub, integrando el código del servidor web basado en `aiohttp`, que maneja las rutas, carga de imágenes, procesamiento OCR, base de datos y otros servicios relacionados.
-
----
-
 # **Proyecto de Reconocimiento de Patentes (OCR) con Server Web Asíncrono**
 
 Este proyecto implementa un sistema completo de reconocimiento de patentes con **Python**, utilizando tecnologías como **aiohttp** para servir un servidor web asíncrono, **OpenCV** y **ONNX** para el procesamiento de imágenes y **MySQL** para almacenar los resultados. Además, el sistema está optimizado con **Docker** para facilitar la configuración y el despliegue, y con **SSL** para habilitar comunicaciones seguras (HTTPS).
