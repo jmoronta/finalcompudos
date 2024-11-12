@@ -56,8 +56,8 @@ pip install -r requirements.txt
 Primero, clona el repositorio en tu máquina local:
 
 ```bash
-git clone https://github.com/tu_usuario/nombre_del_repositorio.git
-cd nombre_del_repositorio
+git clone https://github.com/jmoronta/finalcompudos.git
+cd finalcompudos
 ```
 
 ### **2. Crear un entorno virtual (opcional)**
@@ -147,7 +147,7 @@ Una vez que el servidor esté corriendo, puedes acceder a los siguientes servici
 - **Aplicación web (backend)**: `http://localhost:8000`
 - **phpMyAdmin (gestión de la base de datos)**: `http://localhost:8080`
   - Usuario: `root`
-  - Contraseña: `root_password`
+  - Contraseña: `password`
 
 ### **Cargar una imagen**
 
