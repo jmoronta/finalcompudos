@@ -1,0 +1,4 @@
+getop 
+executor working multiprocesing sin asicronico
+cambiar todo a variables de entorno. os.environ['USER']
+user = os.environ['USER']

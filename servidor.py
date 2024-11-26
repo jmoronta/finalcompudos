@@ -53,7 +53,7 @@ async def upload(request):
 
 async def show(request):
     
-    datos = await conexion.obtener_datos()
+    datos = conexion.obtener_datos()
     
     # Obtener la fecha y hora actual
     ahora = datetime.now()
@@ -359,16 +359,23 @@ async def patente_worker(queue):
                 image_data = image_file.read()
 
             # Aquí intentamos obtener el link. Si falla, asignamos un valor predeterminado o manejamos el error.
-            try:
+            """try:
                 link = gp.convert_to_gplink(image_path)
                 print("La ubicación es:", link)
             except Exception as e:
             # Si hay un error al convertir, asignamos un valor predeterminado o logueamos el error
                 link = "No se pudo generar el link."
                 print(f"Error al generar el link: {e}")
-
+            """
+            # Delegar el procesamiento de la imagen al executor
+            loop = asyncio.get_event_loop()
+            result = await loop.run_in_executor(executor, process_image, image_path)
+            # Procesar el resultado obtenido
+            patente, link, imagen_procesada = result
+            print(f"Patente detectada: {patente}, Link generado: {link}")
+            
             # Insertar en la base de datos
-            await conexion.insert_en_tabla(image_path, nropatente, link)
+            conexion.insert_en_tabla(image_path, nropatente, link)
             
             await result_queue.put("Procesamiento completado")
             
@@ -381,6 +388,23 @@ async def patente_worker(queue):
             # Loguear el error
             print(f"Error en el procesamiento de la imagen {image_path}: {e}")
             # Enviar mensaje de error o realizar otras acciones según sea necesario
+
+# Función intensiva de CPU que será ejecutada por el executor
+def process_image(image_path):
+    try:
+        m = ONNXPlateRecognizer('argentinian-plates-cnn-model')
+        nropatente = m.run(image_path)
+
+        with open(image_path, 'rb') as image_file:
+            image_data = image_file.read()
+
+        # Intentar obtener el link
+        link = gp.convert_to_gplink(image_path)
+
+        return nropatente, link, image_data
+    except Exception as e:
+        print(f"Error en process_image: {e}")
+        raise
 
 # Lanza la función asincrónica utilizando asyncio
 async def start_patente_worker(queue):
@@ -485,7 +509,8 @@ async def main():
         await runner.cleanup()
         await site_ipv4.stop()
 
-
+        # Cierra el executor
+        executor.shutdown(wait=True)
         # Limpiar el bucle de eventos
         #loop.run_until_complete(runner.cleanup())
 
