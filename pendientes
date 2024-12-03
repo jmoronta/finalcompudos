@@ -2,3 +2,10 @@ getop
 executor working multiprocesing sin asicronico
 cambiar todo a variables de entorno. os.environ['USER']
 user = os.environ['USER']
+
+export MYSQL_HOST=localhost
+export MYSQL_USER=root
+export MYSQL_PASSWORD=password
+export MYSQL_DATABASE=registros_patentes
+python app.py
+
