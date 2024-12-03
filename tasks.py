@@ -2,6 +2,7 @@ from celery_config import celery_app
 import getGP as gp
 from fast_plate_ocr import ONNXPlateRecognizer
 import conexion
+import os
 
 @celery_app.task
 def process_image(image_path):
