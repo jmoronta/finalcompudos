@@ -126,12 +126,7 @@ async def handle_upload(request):
         
         return web.Response(text=response_text, content_type='text/html')
 
-        # Aquí esperamos el resultado del procesamiento en segundo plano
-        # Este no es un bloqueo, ya que está gestionado por el worker.
-        #asyncio.create_task(wait_for_result(response))
-
-        #return response
-
+        
     except Exception as e:
         return web.Response(text=f'Error al guardar la imagen: {str(e)}', status=500)
 
@@ -258,6 +253,8 @@ def list_images(folder_path, allowed_formats=None):
             pass  # El archivo no es una imagen válida
 
     return image_list
+
+# Captura excepciones y devuelve un mensaje de error al usuario.
 @web.middleware
 async def error_middleware(request, handler):
     try:

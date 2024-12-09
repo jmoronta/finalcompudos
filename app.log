@@ -3411,3 +3411,100 @@ Traceback (most recent call last):
   File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_runner.py", line 335, in _check_site
     raise RuntimeError(f"Site {site} is not registered in runner {self}")
 RuntimeError: Site <aiohttp.web_runner.TCPSite object at 0x7194d4d83b80> is not registered in runner <aiohttp.web_runner.AppRunner object at 0x7194d4dde700>
+2024-12-09 14:47:44,805 - ERROR - unhandled exception during asyncio.run() shutdown
+task: <Task finished name='Task-1' coro=<main() done, defined at /home/kbza/Proyectos/Compu2docker/servidor.py:271> exception=RuntimeError('Site <aiohttp.web_runner.TCPSite object at 0x76f2c318bb20> is not registered in runner <aiohttp.web_runner.AppRunner object at 0x76f2c31ea610>')>
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 636, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 603, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 1871, in _run_once
+    event_list = self._selector.select(timeout)
+  File "/usr/lib/python3.10/selectors.py", line 469, in select
+    fd_event_list = self._selector.poll(timeout, max_ev)
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/kbza/Proyectos/Compu2docker/servidor.py", line 315, in main
+    await asyncio.Event().wait()
+  File "/usr/lib/python3.10/asyncio/locks.py", line 214, in wait
+    await fut
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/kbza/Proyectos/Compu2docker/servidor.py", line 322, in main
+    await site_ipv4.stop()
+  File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_runner.py", line 73, in stop
+    self._runner._check_site(self)
+  File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_runner.py", line 335, in _check_site
+    raise RuntimeError(f"Site {site} is not registered in runner {self}")
+RuntimeError: Site <aiohttp.web_runner.TCPSite object at 0x76f2c318bb20> is not registered in runner <aiohttp.web_runner.AppRunner object at 0x76f2c31ea610>
+2024-12-09 15:04:00,912 - INFO - 127.0.0.1 [09/Dec/2024:15:04:00 -0300] "GET / HTTP/1.1" 200 3235 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:00,952 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:00,952 - INFO - 127.0.0.1 [09/Dec/2024:15:04:00 -0300] "GET /css/styles.css HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:01,845 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:01,846 - INFO - 127.0.0.1 [09/Dec/2024:15:04:01 -0300] "GET /favicon.ico HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:07,520 - INFO - 127.0.0.1 [09/Dec/2024:15:04:07 -0300] "GET /show.html HTTP/1.1" 200 12838658 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:08,100 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:08,100 - INFO - 127.0.0.1 [09/Dec/2024:15:04:08 -0300] "GET /favicon.ico HTTP/1.1" 500 200 "https://localhost:8000/show.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:27,971 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:27,972 - INFO - 127.0.0.1 [09/Dec/2024:15:04:27 -0300] "GET /favicon.ico HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:32,508 - INFO - 127.0.0.1 [09/Dec/2024:15:04:32 -0300] "GET /upload.html HTTP/1.1" 200 4181 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:32,548 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:32,549 - INFO - 127.0.0.1 [09/Dec/2024:15:04:32 -0300] "GET /css/styles.css HTTP/1.1" 500 200 "https://localhost:8000/upload.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:32,619 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:32,619 - INFO - 127.0.0.1 [09/Dec/2024:15:04:32 -0300] "GET /favicon.ico HTTP/1.1" 500 200 "https://localhost:8000/upload.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:42,654 - INFO - 127.0.0.1 [09/Dec/2024:15:04:42 -0300] "POST /upload HTTP/1.1" 200 1135 "https://localhost:8000/upload.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:42,658 - INFO - Skipping download of 'argentinian-plates-cnn-model' model, already exists at /home/kbza/.cache/fast-plate-ocr/argentinian-plates-cnn-model
+2024-12-09 15:04:42,740 - INFO - Using ONNX Runtime with AzureExecutionProvider.
+2024-12-09 15:04:43,036 - INFO - Skipping download of 'argentinian-plates-cnn-model' model, already exists at /home/kbza/.cache/fast-plate-ocr/argentinian-plates-cnn-model
+2024-12-09 15:04:43,037 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:43,038 - INFO - 127.0.0.1 [09/Dec/2024:15:04:43 -0300] "GET /favicon.ico HTTP/1.1" 500 200 "https://localhost:8000/upload" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:43,077 - INFO - Using ONNX Runtime with AzureExecutionProvider.
+2024-12-09 15:04:51,711 - INFO - 127.0.0.1 [09/Dec/2024:15:04:51 -0300] "GET / HTTP/1.1" 200 3235 "https://localhost:8000/upload" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:51,731 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:51,732 - INFO - 127.0.0.1 [09/Dec/2024:15:04:51 -0300] "GET /css/styles.css HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:51,787 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:51,787 - INFO - 127.0.0.1 [09/Dec/2024:15:04:51 -0300] "GET /favicon.ico HTTP/1.1" 500 200 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:53,459 - INFO - 127.0.0.1 [09/Dec/2024:15:04:52 -0300] "GET /show.html HTTP/1.1" 200 19355121 "https://localhost:8000/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 15:04:53,769 - ERROR - Error procesando la solicitud: Not Found
+2024-12-09 15:04:53,770 - INFO - 127.0.0.1 [09/Dec/2024:15:04:53 -0300] "GET /favicon.ico HTTP/1.1" 500 200 "https://localhost:8000/show.html" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+2024-12-09 17:26:01,043 - ERROR - unhandled exception during asyncio.run() shutdown
+task: <Task finished name='Task-1' coro=<main() done, defined at /home/kbza/Proyectos/Compu2docker/servidor.py:266> exception=RuntimeError('Site <aiohttp.web_runner.TCPSite object at 0x718c08fd85e0> is not registered in runner <aiohttp.web_runner.AppRunner object at 0x718c219c4950>')>
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 636, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 603, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 1871, in _run_once
+    event_list = self._selector.select(timeout)
+  File "/usr/lib/python3.10/selectors.py", line 469, in select
+    fd_event_list = self._selector.poll(timeout, max_ev)
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/kbza/Proyectos/Compu2docker/servidor.py", line 310, in main
+  File "/usr/lib/python3.10/asyncio/locks.py", line 214, in wait
+    await fut
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/kbza/Proyectos/Compu2docker/servidor.py", line 317, in main
+    await image_queue.put(None)  # Enviar señal de terminación al worker
+  File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_runner.py", line 73, in stop
+    self._runner._check_site(self)
+  File "/home/kbza/.local/lib/python3.10/site-packages/aiohttp/web_runner.py", line 335, in _check_site
+    raise RuntimeError(f"Site {site} is not registered in runner {self}")
+RuntimeError: Site <aiohttp.web_runner.TCPSite object at 0x718c08fd85e0> is not registered in runner <aiohttp.web_runner.AppRunner object at 0x718c219c4950>

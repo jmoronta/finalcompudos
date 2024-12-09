@@ -158,7 +158,7 @@ async def show(request):
 
 async def get_dashboard_data(request):
     try:
-        datos = conexion.obtener_datos()  # Implementa esta función en tu módulo de conexión
+        datos = conexion.obtener_datos() 
         data_list = []
         for fila in datos:
             data_list.append({
